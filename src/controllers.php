@@ -42,6 +42,8 @@ $app->get('/logout', function () use ($app) {
 
 
 $app->get('/todo/{id}', function ($id) use ($app) {
+
+
     if (null === $user = $app['session']->get('user')) {
         return $app->redirect('/login');
     }
@@ -63,6 +65,21 @@ $app->get('/todo/{id}', function ($id) use ($app) {
     }
 })
 ->value('id', null);
+
+
+$app->get('/todo/{id}/json', function ($id) use ($app){
+	if ($id){
+		$sql = "SELECT * FROM todos WHERE id = '$id'";
+		$todo = $app['db']->fetchAssoc($sql);
+//	    printf( $todo);
+
+		$response = new Response( json_encode( $todo ) );
+		$response->headers->set( 'Content-Type', 'application/json' );
+
+		return $response;
+
+	}
+});
 
 
 $app->post('/todo/add', function (Request $request) use ($app) {
