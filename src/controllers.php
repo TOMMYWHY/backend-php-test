@@ -83,6 +83,14 @@ $app->post('/todo/add', function (Request $request) use ($app) {
 
 });
 
+$app->match('/todo/update/{id}', function ($id) use ($app) {
+
+	$sql = "UPDATE todos SET status = abs(status-1) WHERE id = '$id'";
+
+	$app['db']->executeUpdate($sql);
+
+	return $app->redirect('/todo');
+});
 
 $app->match('/todo/delete/{id}', function ($id) use ($app) {
 
