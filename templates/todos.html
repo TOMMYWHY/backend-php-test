@@ -1,14 +1,15 @@
 {% extends "layout.html" %}
 
 {% block content %}
+
 <div class="col-md-4 col-md-offset-4">
     <h1>Todo List:</h1>
     <table class="table table-striped">
         <th>#</th><th>User</th><th>Description</th><th></th>
         {% for todo in todos %}
             <tr >
-                <td>{{ todo.id }}</td>
-                <td>{{ todo.user_id }}</td>
+                <td >{{ todo.id }}</td>
+                <td class="user_id">{{ todo.user_id }}</td>
                 {% if todo.status ==1 %}
                 <td style="text-decoration:line-through" >
                     <a href="{{ app.request.baseurl }}/todo/{{ todo.id }}">
@@ -38,18 +39,77 @@
             </tr>
         {% endfor %}
         <tr>
-            <form method="post" action="{{ app.request.baseurl }}/todo/add">
+            <form id="form_add">
                 <td colspan="3" class="form-group  has-error">
-                    <input type="textbox" name="description" class="small-6 small-center " required placeholder="Description...">
+                    <input type="textbox" id="description" name="description" class="small-6 small-center "  placeholder="Description...">
 
                 </td>
                 <td>
-                    <button type="submit" class="btn btn-sm btn-primary">Add</button>
+                    <a href="javascript:;" class="btn btn-sm btn-primary add_item" >Add</a>
                 </td>
             </form>
 
         </tr>
     </table>
+
+    <div class="modal" id="deleteArticleModal" tabindex="-1" role="dialog" aria-labelledby="deleteArticleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteArticleModalLabel">Confirm add the todo</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Are you sure add the todo?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">cancel</button>
+                    <button type="button" name="add" class="btn btn-sm btn-primary confirm-add">Add</button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
 </div>
+
+<script>
+    $(".add_item").click(function(event) {
+
+        $('#deleteArticleModal').modal('show');
+        target = $(event.target);
+        console.log(target)
+
+    });
+
+    $(".confirm-add").click(function(event) {
+        console.log("asdasdasdasdsa")
+        let data =  { user_id: $(".user_id").html(), description:$("#description").val()}
+
+        $.ajax({
+            url: "http://localhost:1337/todo/add",
+            type: "POST",
+            data: data,
+        })
+            .done(function(data) {
+                if (data === 'success') {
+                    location.reload();
+
+                }
+            })
+            .fail(function(xhr) {
+                console.log(xhr.status);
+            });
+        location.reload();
+
+    });
+
+
+
+
+</script>
 
 {% endblock %}

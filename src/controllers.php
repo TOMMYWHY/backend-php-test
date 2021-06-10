@@ -58,9 +58,15 @@ $app->get('/todo/{id}', function ($id) use ($app) {
     } else {
         $sql = "SELECT * FROM todos WHERE user_id = '${user['id']}'";
         $todos = $app['db']->fetchAll($sql);
+//		die($todos[0]);
+//	    $todos =  $app['db']->fetchAll($sql)->getArrayResult()->setFirstResult(1)
+//	                           ->setMaxResults(5);
+//	    $paginator = new Paginator($todos, $fetchJoinCollection = true);
+//	    $c = count($paginator);
 
         return $app['twig']->render('todos.html', [
             'todos' => $todos,
+//			'pages' =>$c
         ]);
     }
 })
